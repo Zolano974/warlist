@@ -1,2 +1,0 @@
-# warlist
-Created with CodeSandbox
