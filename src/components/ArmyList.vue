@@ -1,16 +1,67 @@
 <template>
-  <div class="armylist">
-    <h2 class="title">{{ title }} (X pts)</h2>
-    <h4 class="subtitle">{{ comment }}</h4>
+  <div class="section">
+    <h2 class="title">{{ title }} ({{ globalCost }} pts)</h2>
+    <h3 class="subtitle">{{ comment }}</h3>
+
+    <hr>
+
+    <div class="level" style="width:100%">
+      <army-section 
+        section="Lords" 
+        :units="list.army.lords"
+        :stats="stats.lords"
+        ></army-section>
+    </div>
+
+    <div class="level">
+      <army-section 
+        section="Heroes" 
+        :units="list.army.heroes"
+        :stats="stats.heroes"
+        ></army-section>
+    </div>
+
+    <div class="level">
+      <army-section 
+        section="Core" 
+        :units="list.army.core"
+        :stats="stats.core"
+        ></army-section>
+    </div>
+
+    <div class="level">
+      <army-section 
+        section="Special" 
+        :units="list.army.special"
+        :stats="stats.special"
+        ></army-section>
+    </div>
+
+    <div class="level">
+      <army-section 
+        section="Rare" 
+        :units="list.army.rare"
+        :stats="stats.rare"
+        ></army-section>
+    </div>
   </div>
 </template>
 
 <script>
+import ArmySection from "./ArmySection";
 export default {
   name: "ArmyList",
+  components: {
+    ArmySection
+  },
   props: {
     list: Object,
     codex: Object
+  },
+  methods: {
+    percentage(cost) {
+      return cost === 0 ? 0 : Math.round((cost * 100) / this.globalCost, 2);
+    }
   },
   computed: {
     title() {
@@ -26,9 +77,8 @@ export default {
         })
         .reduce((acc, elt) => {
           return acc + elt;
-        });
+        }, 0);
     },
-
     heroesCost() {
       return this.list.army.heroes
         .map(e => {
@@ -40,7 +90,7 @@ export default {
     },
 
     coreCost() {
-      return this.list.army.base
+      return this.list.army.core
         .map(e => {
           return e.finalCost;
         })
@@ -50,7 +100,6 @@ export default {
     },
 
     specialCost() {
-      console.error(this.list.army.special);
       return this.list.army.special
         .map(e => {
           return e.finalCost;
@@ -70,12 +119,37 @@ export default {
     },
     globalCost() {
       return (
-        this.lordsCost() +
-        this.heroesCost() +
-        this.coreCost() +
-        this.specialCost() +
-        this.rareCost()
+        this.lordsCost +
+        this.heroesCost +
+        this.coreCost +
+        this.specialCost +
+        this.rareCost
       );
+    },
+    stats() {
+      var that = this;
+      return {
+        lords: {
+          total: this.lordsCost,
+          percentage: that.percentage(this.lordsCost)
+        },
+        heroes: {
+          total: this.heroesCost,
+          percentage: that.percentage(this.heroesCost)
+        },
+        core: {
+          total: this.coreCost,
+          percentage: that.percentage(this.coreCost)
+        },
+        special: {
+          total: this.specialCost,
+          percentage: that.percentage(this.specialCost)
+        },
+        rare: {
+          total: this.rareCost,
+          percentage: that.percentage(this.rareCost)
+        }
+      };
     }
   },
   created() {
@@ -85,6 +159,9 @@ export default {
     //console.log(this.coreCost);
     //console.log(this.specialCost);
     //console.log(this.rareCost);
+  },
+  mounted() {
+    console.log("mounted");
   }
 };
 </script>
