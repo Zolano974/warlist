@@ -3,37 +3,26 @@
     <h1 class="title">Search Rules</h1>
 
     <div class="section">
-      <input class="input is-primary" type="text" placeholder="Search a Rule..." v-model="search">
+      <input
+        class="input is-primary"
+        type="text"
+        placeholder="Search a Rule..."
+        v-model="search"
+      />
     </div>
-
-    <div class="section" v-if="true">
-      <h2 class="subtitle">Results</h2>
-      <hr>
-      <div class="columns" v-for="result in oddSearchedContents" :key="result.title">
-        <div class="column is-full">
-          <rule :title="result.title" :content="result.content"></rule>
-        </div>
-      </div>
-    </div>
-
-    <div class="tile is-parent" v-else>
-      <div v-for="result in searchedContents" :key="result.title" class="tile is-child box">
-        <rule :title="result.title" :content="result.content"></rule>
-      </div>
-    </div>
+    <display-rules :rules="searchedContents"></display-rules>
   </div>
 </template>
 
 <script>
-import Rule from "./Rule";
+import DisplayRules from "./DisplayRules";
 
 export default {
   name: "SearchRule",
-  components: { Rule },
+  components: { DisplayRules },
   props: ["rulescontent"],
   data() {
     return {
-      //specialRulesRawContent: SpecialRules.content,
       search: ""
     };
   },
@@ -115,7 +104,20 @@ export default {
       var mappings = this.splitContent(this.rulescontent);
 
       //      return mappings;
-      return this.filterOnTitles(mappings, this.search);
+      var filtered = this.filterOnTitles(mappings, this.search);
+
+      return filtered;
+      /*
+      var indexed = [];
+
+      for (var i = 0; i < filtered.length; i++) {
+        indexed.push({
+          ...elt,
+          i
+        });
+      }
+      return indexed;
+      */
     },
     oddSearchedContents() {
       var odds = [];
