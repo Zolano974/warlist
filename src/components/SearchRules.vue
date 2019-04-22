@@ -25,17 +25,15 @@
 </template>
 
 <script>
-import SpecialRules from "../dao/rules/special-rules-rearrange";
-
 import Rule from "./Rule";
 
 export default {
-  name: "Zob",
+  name: "SearchRule",
   components: { Rule },
-  props: {},
+  props: ["rulescontent"],
   data() {
     return {
-      specialRulesRawContent: SpecialRules.content,
+      //specialRulesRawContent: SpecialRules.content,
       search: ""
     };
   },
@@ -114,7 +112,7 @@ export default {
   },
   computed: {
     searchedContents() {
-      var mappings = this.splitContent(this.specialRulesRawContent);
+      var mappings = this.splitContent(this.rulescontent);
 
       //      return mappings;
       return this.filterOnTitles(mappings, this.search);

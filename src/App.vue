@@ -1,35 +1,33 @@
 <template>
   <div class="container">
     <div class="section">
-      <zob></zob>
+      <SearchRules :rulescontent="specialRules.content"></SearchRules>
     </div>
     <hr>
-    <!--
-      <div class="section"><ArmyList :list="armylist" :codex="codex" /></div>
-    -->
   </div>
 </template>
 
 <script>
 import HelloWorld from "./components/HelloWorld";
 import ArmyList from "./components/ArmyList";
-import Search from "./components/Search";
-import Zob from "./components/Zob";
+import SearchRules from "./components/SearchRules";
 
 import mookArmyList from "./dao/lists/list-dev-darkelves-1";
 import codex from "./dao/armies/dark-elves.js";
+import SpecialRules from "./dao/rules/special-rules-rearrange";
 
 export default {
   name: "App",
   components: {
     HelloWorld,
     ArmyList,
-    Zob
+    SearchRules
   },
   data: function() {
     return {
       armylist: mookArmyList,
-      codex: codex
+      codex: codex,
+      specialRules: SpecialRules
     };
   }
 };
