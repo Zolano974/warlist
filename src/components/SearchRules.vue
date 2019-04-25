@@ -3,12 +3,7 @@
     <h1 class="title">Search Rules</h1>
 
     <div class="section">
-      <input
-        class="input is-primary"
-        type="text"
-        placeholder="Search a Rule..."
-        v-model="search"
-      />
+      <input class="input is-primary" type="text" placeholder="Search a Rule..." v-model="search">
     </div>
     <display-rules :rules="searchedContents"></display-rules>
   </div>
@@ -44,10 +39,6 @@ export default {
         var regex = /\[enter\]/gi;
 
         var replacedContent = content.replace(regex, "<br/>");
-
-        if (content.indexOf("[enter]") != -1) {
-          console.log(content + " => \n \n" + replacedContent);
-        }
 
         return {
           title: title,
@@ -107,17 +98,6 @@ export default {
       var filtered = this.filterOnTitles(mappings, this.search);
 
       return filtered;
-      /*
-      var indexed = [];
-
-      for (var i = 0; i < filtered.length; i++) {
-        indexed.push({
-          ...elt,
-          i
-        });
-      }
-      return indexed;
-      */
     },
     oddSearchedContents() {
       var odds = [];
