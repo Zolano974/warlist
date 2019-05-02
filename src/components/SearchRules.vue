@@ -1,11 +1,28 @@
 <template>
   <div class="section">
-    <h1 class="title">Search Rules</h1>
+    <section class="hero is-dark">
+      <div class="hero-body">
+        <div class="container">
+          <h2 class="subtitle has-text-centered">Rechercher une règle spéciale &nbsp;&nbsp;</h2>
+        </div>
+      </div>
+    </section>
 
     <div class="section">
-      <input class="input is-primary" type="text" placeholder="Search a Rule..." v-model="search">
+      <input
+        class="input is-primary"
+        type="text"
+        placeholder="Search a Rule..."
+        v-model="search"
+        v-on:keydown.up="increment"
+        v-on:keydown.down="decrement"
+      >
+      <p class="advice">Utilise
+        <font-awesome-icon icon="caret-up"/>&nbsp;et
+        <font-awesome-icon icon="caret-down"/>&nbsp;pour faire défiler les résultats
+      </p>
     </div>
-    <display-rules :rules="searchedContents"></display-rules>
+    <display-rules :rules="indexedRules" :offset="offset" :negative="negativeCoeff"></display-rules>
   </div>
 </template>
 
@@ -18,10 +35,25 @@ export default {
   props: ["rulescontent"],
   data() {
     return {
-      search: ""
+      search: "",
+      offset: 1
     };
   },
   methods: {
+    increment(event) {
+      var n = (this.offset + 1) % (this.rulesCount == 0 ? 1 : this.rulesCount);
+
+      this.offset = Number(n);
+    },
+    decrement(event) {
+      var y =
+        (this.offset - 1) %
+        (this.rulesCount == 0 ? 1 : this.rulesCount);
+      console.log("offset : " + this.offset);
+      console.log("modulo : " + this.rulesCount);
+      console.log("result : " + y);
+      this.offset = Number(y);
+    },
     /**
      * Splits the raw content to an array mapping the titles and contents
      */
@@ -91,6 +123,12 @@ export default {
     }
   },
   computed: {
+    negativeCoeff() {
+      return this.offset >= 0 ? 1 : -1;
+    },
+    rulesCount() {
+      return this.searchedContents.length;
+    },
     searchedContents() {
       var mappings = this.splitContent(this.rulescontent);
 
@@ -99,21 +137,20 @@ export default {
 
       return filtered;
     },
-    oddSearchedContents() {
-      var odds = [];
-      for (var i = 0; i < this.searchedContents.length; i = i + 2) {
-        if (this.searchedContents[i] != undefined)
-          odds.push(this.searchedContents[i]);
+    indexedRules() {
+      var indexed = [];
+      var offset = this.offset;
+      for (var i = 0; i < this.rulesCount; i++) {
+        //modulo pour la rotation
+        var index = Math.abs(
+          ((i + offset) % this.rulesCount) * this.negativeCoeff
+        );
+        indexed.push({
+          ...this.searchedContents[index],
+          index: i
+        });
       }
-      return odds;
-    },
-    evenSearchedContents() {
-      var evens = [];
-      for (var i = 1; i < this.searchedContents.length; i = i + 2) {
-        if (this.searchedContents[i] != undefined)
-          evens.push(this.searchedContents[i]);
-      }
-      return evens;
+      return indexed;
     }
   },
   created() {},
@@ -123,6 +160,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.advice {
+  font-style: italic;
+  color: #999;
+}
 h3 {
   margin: 40px 0 0;
 }

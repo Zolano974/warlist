@@ -7,14 +7,16 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import {
+  faCircle,
   faCoffee,
-  faAngleDoubleRight,
-  faAngleDoubleLeft
+  faCaretUp,
+  faCaretDown
 } from "@fortawesome/free-solid-svg-icons";
 
+library.add(faCircle);
 library.add(faCoffee);
-library.add(faAngleDoubleRight);
-library.add(faAngleDoubleLeft);
+library.add(faCaretUp);
+library.add(faCaretDown);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

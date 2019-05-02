@@ -1,8 +1,6 @@
 <template>
-  <div class="container">
-    <div class="section">
-      <SearchRules :rulescontent="specialRules.content"></SearchRules>
-    </div>
+  <div class="section">
+    <SearchRules :rulescontent="specialRules.content"></SearchRules>
     <hr>
   </div>
 </template>

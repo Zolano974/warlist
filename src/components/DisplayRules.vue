@@ -1,26 +1,24 @@
 <template>
-  <div class="section">
-    <div class="section" v-if="true">
+  <div>
+    <div class="section">
       <h2 class="subtitle">
-        <button class="button is-dark" v-on:click="decrement">
-          <span class="icon">
-            <font-awesome-icon icon="angle-double-left"/>
-          </span>
-        </button>
         Results
-        <button class="button is-dark" v-on:click="increment">
-          <span class="icon">
-            <font-awesome-icon icon="angle-double-right"/>
-          </span>
-        </button>
+        <span v-if="this.rulesCount > 0">({{ this.absOffset}} / {{this.rulesCount}})</span>
       </h2>
       <hr>
-      <div class="columns" v-for="result in indexedRules" :key="result.index">
+      <div class="columns" v-for="result in rules" :key="result.index">
         <transition name="fade">
-          <div v-if="result.index==0" class="column is-full">
-            <rule :title="result.title" :content="result.content"></rule>
-          </div>
+          <template v-if="result.index<numberDisplayed">
+            <div class="column is-full">
+              <rule :title="result.title" :content="result.content"></rule>
+            </div>
+          </template>
         </transition>
+      </div>
+      <div class="section has-text-centered" v-if="rulesCount > numberDisplayed">
+        <font-awesome-icon icon="circle"/>&nbsp;
+        <font-awesome-icon icon="circle"/>&nbsp;
+        <font-awesome-icon icon="circle"/>
       </div>
     </div>
   </div>
@@ -29,50 +27,25 @@
 <script>
 import Rule from "./Rule";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCoffee } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
-library.add(faCoffee);
-
 export default {
   name: "DisplayRules",
   components: { Rule },
-  props: ["rules"],
+  props: ["rules", "offset", "negative"],
   data() {
     return {
-      offset: 1
+      numberDisplayed: 1
     };
   },
-  methods: {
-    increment(event) {
-      var n = (this.offset + 1) % (this.rulesCount == 0 ? 1 : this.rulesCount);
-      console.log(n);
-      this.offset = Number(n);
-    },
-    decrement(event) {
-      var y = (this.offset - 1) % (this.rulesCount == 0 ? 1 : this.rulesCount);
-
-      this.offset = Number(y);
-    }
-  },
+  methods: {},
   computed: {
     rulesCount() {
-      console.log(this.rules.length);
       return this.rules.length;
     },
-    indexedRules() {
-      var indexed = [];
-      var offset = this.offset;
-      for (var i = 0; i < this.rulesCount; i++) {
-        //modulo pour la rotation
-        var index = Math.abs((i + offset) % this.rulesCount);
-        indexed.push({
-          ...this.rules[index],
-          index: i
-        });
-      }
-      return indexed;
+    absOffset() {
+      var absOffset = Math.abs(this.offset);
+      var roundOffset =
+        this.offset > 0 ? absOffset : this.rulesCount - absOffset;
+      return roundOffset;
     }
   },
   created() {},
@@ -95,5 +68,13 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  transition: opacity 0.5s;
 }
 </style>
